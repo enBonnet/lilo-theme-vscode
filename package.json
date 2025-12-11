@@ -1,0 +1,58 @@
+{
+    "name": "lilo-theme",
+    "version": "1.0.0",
+    "displayName": "Lilo Theme",
+    "description": "The non Official Lilo Theme for Visual Studio Code",
+    "publisher": "enbonnet",
+    "license": "MIT",
+    "scripts": {
+        "build": "node ./scripts/build.js",
+        "lint": "node ./scripts/lint.js",
+        "package": "vsce package -o ./bin/lilo.vsix",
+        "vscode:prepublish": "npm run build",
+        "vsce:publish": "vsce publish"
+    },
+    "maintainers": [
+        "Ender Bonnet"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/enBonnet/lilo-theme-vscode.git"
+    },
+    "bugs": {
+        "url": "https://github.com/enBonnet/lilo-theme-vscode/issues"
+    },
+    "engines": {
+        "vscode": "^1.13.0"
+    },
+    "categories": [
+        "Themes"
+    ],
+    "keywords": [
+        "lilo",
+        "dark",
+        "theme",
+        "color-theme"
+    ],
+    "icon": "images/icon.png",
+    "contributes": {
+        "themes": [
+            {
+                "label": "Lilo Theme",
+                "uiTheme": "vs-dark",
+                "path": "./theme/lilo.json"
+            },
+            {
+                "label": "Lilo Theme Soft",
+                "uiTheme": "vs-dark",
+                "path": "./theme/lilo-soft.json"
+            }
+        ]
+    },
+    "devDependencies": {
+        "js-yaml": "^4.1.1",
+        "prettier": "^3.0.0",
+        "tinycolor2": "^1.6.0",
+        "vsce": "^2.15.0"
+    }
+}
