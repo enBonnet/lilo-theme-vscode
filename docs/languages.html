@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Language Scoping &mdash; Lilo Theme</title>
+  <meta name="description" content="TextMate scoping rules for 25+ languages in the Lilo Theme for VS Code.">
+  <meta property="og:title" content="Lilo Theme — Language Scoping">
+  <meta property="og:description" content="Detailed TextMate scoping rules for languages supported by the Lilo VS Code theme.">
+  <meta property="og:image" content="images/screenshots/base.png">
+  <link rel="icon" type="image/png" href="images/icon.png">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .page-header {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 120px 2rem 40px;
+    }
+
+    .page-header h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--green) 50%, var(--purple) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.75rem;
+    }
+
+    .page-header p {
+      color: var(--fg-muted);
+      font-size: 1.1rem;
+      font-weight: 300;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .search-container {
+      position: relative;
+      z-index: 1;
+      max-width: 640px;
+      margin: 0 auto 3rem;
+      padding: 0 1rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.9rem 1.25rem;
+      background: var(--bg-light);
+      border: 1px solid var(--bg-lighter);
+      border-radius: 10px;
+      color: var(--fg);
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      outline: none;
+    }
+
+    .search-input::placeholder {
+      color: var(--fg-muted);
+    }
+
+    .search-input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px rgba(61, 229, 232, 0.12);
+    }
+
+    .lang-grid {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem 80px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .lang-card {
+      background: var(--bg-light);
+      border: 1px solid var(--bg-lighter);
+      border-radius: 10px;
+      padding: 1.5rem;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .lang-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--cyan);
+    }
+
+    .lang-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--fg);
+      margin-bottom: 0.75rem;
+    }
+
+    .scopes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .scope-badge {
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      background: rgba(155, 138, 224, 0.15);
+      color: var(--purple);
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.78rem;
+      border-radius: 6px;
+      word-break: break-all;
+    }
+
+    .empty-state {
+      display: none;
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--fg-muted);
+      font-size: 1.05rem;
+    }
+
+    .empty-state.visible {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <img src="images/icon.png" alt="Lilo Theme">
+      Lilo Theme
+    </a>
+    <nav>
+      <ul class="nav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="languages.html" class="highlight">Language Scoping</a></li>
+        <li><a href="https://github.com/enBonnet/lilo-theme-vscode">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<header class="page-header">
+  <h1>Language Scoping</h1>
+  <p>Every language below has explicit TextMate scope rules defined in the Lilo theme. Use the search to find a language.</p>
+</header>
+
+<div class="search-container">
+  <input type="text" class="search-input" id="search" placeholder="Search languages... (e.g. TypeScript, Rust, GraphQL)">
+</div>
+
+<div class="lang-grid" id="langGrid">
+  <div class="empty-state" id="emptyState">No languages match your search.</div>
+</div>
+
+<footer class="footer">
+  <p>Crafted with &#x1F5A4; by <a href="https://enbonnet.com">Ender Bonnet</a>. Licensed under MIT.</p>
+</footer>
+
+<script>
+  const languages = [
+    {
+      name: 'C',
+      scopes: ['storage.type.c']
+    },
+    {
+      name: 'C#',
+      scopes: ['keyword.type.cs', 'storage.type.cs']
+    },
+    {
+      name: 'CoffeeScript',
+      scopes: ['meta.variable.assignment.destructured.object.coffee']
+    },
+    {
+      name: 'CSS / Less / Stylus',
+      scopes: ['entity.other.attribute-name', 'entity.other.attribute-name.parent-selector', 'meta.selector']
+    },
+    {
+      name: 'Go',
+      scopes: ['source.go storage.type']
+    },
+    {
+      name: 'GraphQL',
+      scopes: ['meta.selectionset.graphql', 'entity.name.fragment.graphql', 'meta.arguments.graphql']
+    },
+    {
+      name: 'Groovy',
+      scopes: ['meta.method.groovy', 'keyword.operator.navigation.groovy', 'storage.type.groovy']
+    },
+    {
+      name: 'Haskell',
+      scopes: ['storage.type.haskell', 'meta.preprocessor.haskell', 'constant.language.empty-list.haskell']
+    },
+    {
+      name: 'HTML',
+      scopes: ['entity.name.tag', 'entity.other.attribute-name']
+    },
+    {
+      name: 'Java',
+      scopes: ['meta.method-call.java', 'keyword.operator.dereference.java', 'storage.type.java']
+    },
+    {
+      name: 'JavaScript / JSX',
+      scopes: ['variable.other.constant.js', 'punctuation.section.embedded.jsx']
+    },
+    {
+      name: 'Log files',
+      scopes: ['log.error', 'log.warning']
+    },
+    {
+      name: 'Lua',
+      scopes: ['support.function.any-method.lua']
+    },
+    {
+      name: 'Makefile',
+      scopes: ['entity.name.function.target.makefile', 'meta.scope.prerequisites.makefile']
+    },
+    {
+      name: 'Markdown',
+      scopes: ['markup.heading', 'markup.bold', 'markup.italic', 'markup.quote', 'markup.inline.raw', 'fenced_code.block.language', 'meta.separator.markdown']
+    },
+    {
+      name: 'Objective-C',
+      scopes: ['storage.type.objc', 'meta.implementation storage.type.objc', 'meta.protocol-list.objc', 'meta.return-type.objc']
+    },
+    {
+      name: 'OCaml',
+      scopes: ['storage.type.ocaml']
+    },
+    {
+      name: 'Perl',
+      scopes: ['constant.other.key.perl']
+    },
+    {
+      name: 'PHP',
+      scopes: ['meta.function-call.php', 'storage.type.php', 'variable.other.php']
+    },
+    {
+      name: 'PowerShell',
+      scopes: ['source.powershell entity.other.attribute-name', 'support.constant', 'keyword.operator.other.powershell']
+    },
+    {
+      name: 'Python',
+      scopes: ['string.quoted.docstring.multi.python']
+    },
+    {
+      name: 'Ruby',
+      scopes: ['variable.other.readwrite.instance.ruby', 'constant.other.symbol.hashkey.ruby']
+    },
+    {
+      name: 'Rust',
+      scopes: ['storage.class.std.rust', 'storage.type.core.rust']
+    },
+    {
+      name: 'SCSS',
+      scopes: ['meta.attribute-selector.scss', 'meta.at-rule.function', 'meta.at-rule.mixin']
+    },
+    {
+      name: 'Shell',
+      scopes: ['source.shell variable.other', 'meta.scope.for-loop.shell']
+    },
+    {
+      name: 'Swift',
+      scopes: ['keyword.expressions-and-types.swift', 'keyword.primitive-datatypes.swift', 'storage.type.attribute.swift']
+    },
+    {
+      name: 'TOML',
+      scopes: ['entity.name.section.toml', 'variable.other.key.toml', 'constant.other.date']
+    },
+    {
+      name: 'TypeScript / TSX',
+      scopes: ['variable.other.constant.ts', 'variable.other.constant.tsx', 'punctuation.section.embedded.tsx']
+    },
+    {
+      name: 'YAML',
+      scopes: ['entity.name.tag.yaml', 'variable.other.alias.yaml']
+    }
+  ];
+
+  const grid = document.getElementById('langGrid');
+  const emptyState = document.getElementById('emptyState');
+  const searchInput = document.getElementById('search');
+
+  function renderCards(filterText) {
+    grid.querySelectorAll('.lang-card').forEach(function(el) { el.remove(); });
+    var term = (filterText || '').toLowerCase().trim();
+    var visible = languages.filter(function(lang) {
+      if (!term) return true;
+      return lang.name.toLowerCase().indexOf(term) !== -1
+        || lang.scopes.some(function(s) { return s.toLowerCase().indexOf(term) !== -1; });
+    });
+
+    if (visible.length === 0) {
+      emptyState.classList.add('visible');
+    } else {
+      emptyState.classList.remove('visible');
+    }
+
+    visible.forEach(function(lang) {
+      var card = document.createElement('div');
+      card.className = 'lang-card';
+
+      var name = document.createElement('div');
+      name.className = 'lang-name';
+      name.textContent = lang.name;
+
+      var scopesDiv = document.createElement('div');
+      scopesDiv.className = 'scopes';
+
+      lang.scopes.forEach(function(scope) {
+        var badge = document.createElement('span');
+        badge.className = 'scope-badge';
+        badge.textContent = scope;
+        scopesDiv.appendChild(badge);
+      });
+
+      card.appendChild(name);
+      card.appendChild(scopesDiv);
+      grid.appendChild(card);
+    });
+  }
+
+  searchInput.addEventListener('input', function(e) {
+    renderCards(e.target.value);
+  });
+
+  renderCards('');
+</script>
+
+</body>
+</html>
